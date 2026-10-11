@@ -24,7 +24,7 @@ endif
 HOSTCC		:= gcc
 HOSTCFLAGS	:= -Wall -O2
 
-GDB		:= $(GCCPREFIX)gdb
+GDB		?= gdb-multiarch
 
 CC		:= $(GCCPREFIX)gcc
 CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror
@@ -171,8 +171,8 @@ debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 		-kernel $(UCOREIMG) \
 		-s -S
 
-gdb:
-	riscv64-unknown-elf-gdb \
+gdb: $(kernel)
+	$(GDB) \
     -ex 'file bin/kernel' \
     -ex 'set arch riscv:rv64' \
     -ex 'target remote localhost:1234'
@@ -189,6 +189,7 @@ TOUCH_FILES		:= kern/trap/trap.c
 MAKEOPTS		:= --quiet --no-print-directory
 
 grade:
+	@test -f tools/grade.sh || { echo "Lab1: tools/grade.sh is unavailable; use the documented manual checks."; exit 1; }
 	$(V)$(MAKE) $(MAKEOPTS) clean
 	$(V)$(SH) tools/grade.sh
 

@@ -30,14 +30,19 @@ char *readline(const char *prompt) {
         c = getchar();
         if (c < 0) {
             return NULL;
+        } else if (c == '\b' || c == 0x7f) {
+            if (i > 0) {
+                cputchar('\b');
+                cputchar(' ');
+                cputchar('\b');
+                i--;
+            }
         } else if (c >= ' ' && i < BUFSIZE - 1) {
             cputchar(c);
             buf[i++] = c;
-        } else if (c == '\b' && i > 0) {
-            cputchar(c);
-            i--;
         } else if (c == '\n' || c == '\r') {
-            cputchar(c);
+            cputchar('\r');
+            cputchar('\n');
             buf[i] = '\0';
             return buf;
         }
