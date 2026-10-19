@@ -1,0 +1,9 @@
+Lab2 validation: default 128 MiB QEMU virt, single CPU
+PASS: best-fit
+PASS: official grade 20/20
+PASS: buddy
+PASS: slub
+PASS: native allocator stress tests
+PASS: GDB / Sv39 / page descriptors
+ALL PASS. Default Best-Fit build restored. Logs: /home/abc/lab2-complete/report/logs
+

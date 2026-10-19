@@ -1,0 +1,25 @@
+The target architecture is set to "riscv:rv64".
+0x0000000000001000 in ?? ()
+pc             0x1000	0x1000
+=> 0x1000:	auipc	t0,0x0
+   0x1004:	addi	a2,t0,40
+   0x1008:	csrr	a0,mhartid
+   0x100c:	ld	a1,32(t0)
+   0x1010:	ld	t0,24(t0)
+   0x1014:	jr	t0
+Hardware assisted breakpoint 1 at 0xffffffffc02000da: file kern/init/init.c, line 30.
+
+Breakpoint 1, kern_init () at kern/init/init.c:30
+30	    memset(edata, 0, end - edata);
+pc             0xffffffffc02000da	0xffffffffc02000da <kern_init>
+sp             0xffffffffc0205000	0xffffffffc0205000
+satp           0x8000000000080205	-9223372036854251003
+Breakpoint 2 at 0xffffffffc0201108: file kern/mm/pmm.c, line 128.
+
+Breakpoint 2, check_alloc_page () at kern/mm/pmm.c:128
+128	    pmm_manager->check();
+$1 = 0xffffffff40000000
+$2 = 0x88000
+$3 = 0xffffffffc0207000
+$4 = 0x1
+[Inferior 1 (process 1) detached]

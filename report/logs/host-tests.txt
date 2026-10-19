@@ -1,0 +1,3 @@
+PASS: unchanged Best-Fit checks, Buddy checks, SLUB checks on both managers,
+40,000 deterministic mixed allocation/free operations with overlap/accounting checks,
+and Buddy full exhaustion/recovery/coalescing of 2,048 pages.
