@@ -14,7 +14,7 @@ Lab1 能启动并输出，Lab2 进一步把“物理内存”转化为可分配�
 
 ## 二、环境及 AI 协作
 
-实际验证环境为 Ubuntu 虚拟机，riscv64-unknown-elf-gcc 13.2.0、QEMU 8.2.2、OpenSBI 1.3、gdb-multiarch 15.0.50；版本输出见 logs/environment.txt。本次本机额外使用已有 Clang 15 / LLD 生成 RV64GC 目标并链接，使用 Windows 宿主编译器执行真实分配器源码测试。AI 辅助工具为本次 Codex 会话，具体底层模型未由用户确认；不套用上次实验的 DeepSeek 名称作为本次已确认模型。
+实际验证环境为 Ubuntu 虚拟机，riscv64-unknown-elf-gcc 13.2.0、QEMU 8.2.2、OpenSBI 1.3、gdb-multiarch 15.0.50；版本输出见 logs/environment.txt。本次本机额外使用已有 Clang 15 / LLD 生成 RV64GC 目标并链接，使用 Windows 宿主编译器执行真实分配器源码测试。小组使用的 AI 辅助开发环境为 Claude Code + DeepSeek API，底层模型为 DeepSeek V4，用于辅助理解实验要求、生成代码和设计测试；后续补齐、检查及验证工作另有 Codex 协助。
 
 ## 三、物理内存初始化
 
