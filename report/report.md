@@ -138,13 +138,25 @@ SLUB 位于 `slub.c`，提供 `kmalloc()` 和 `kfree()`。底层通过页分配�
 
 ![完整测试结果](images/05_all_pass.png)
 
-### 6.6 GDB 检查
+### 6.6 GDB 调试
 
-通过 GDB 检查了内核入口、`satp` 和页描述符。记录中 `satp` 为 `0x8000000000080205`，采用 Sv39；`va_pa_offset` 为 `0xffffffff40000000`，`npage` 为 `0x88000`。
+在一个终端执行 `make debug`，另一个终端执行 `make gdb`，连接 QEMU 后设置断点，查看寄存器和页面分配情况。
 
-下图为保存的 GDB 日志在终端中的显示，完整输出见 `logs/gdb.txt`。
+首先在 `kern_init` 设置断点。程序停在内核入口后，查看 `pc`、`sp`、`satp` 和当前指令。`satp` 为 `0x8000000000080205`，分页模式为 Sv39。
 
-![GDB 检查记录](images/02-gdb-no-cursor.png)
+![GDB 内核入口与寄存器](images/07_gdb_kernel.png)
+
+接着在 `check_alloc_page` 设置断点，查看页描述符。`pages` 为 `0xffffffffc0207000`，`npage` 为 557056，`nbase` 为 524288，两者相减得到 32768 页，对应 128 MiB 内存。`sizeof(struct Page)` 为 40 字节，第一项的 `flags=1`，表示保留页。
+
+![GDB 物理页初始化](images/08_gdb_page_init.png)
+
+在 `best_fit_alloc_pages` 设置断点，查看到本次申请 `n=1`，分配前有 31929 个空闲页。调用栈显示这次分配来自 `basic_check` 测试。
+
+![GDB Best-Fit 分配前](images/09_gdb_best_fit.png)
+
+使用 `finish` 执行完本次分配，函数返回非空的页描述符指针，空闲页数由 31929 减少到 31928，与申请的 1 页一致。
+
+![GDB Best-Fit 分配后](images/10_gdb_best_fit_result.png)
 
 ## 七、思考题
 
