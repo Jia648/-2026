@@ -27,54 +27,54 @@ struct fdt_header {
 
 // 字节序转换函数
 static uint32_t fdt32_to_cpu(uint32_t x) {
-    return ((x & 0xff) << 24) | (((x >> 8) & 0xff) << 16) | 
+    return ((x & 0xff) << 24) | (((x >> 8) & 0xff) << 16) |
            (((x >> 16) & 0xff) << 8) | ((x >> 24) & 0xff);
 }
 
 static uint64_t fdt64_to_cpu(uint64_t x) {
-    return ((uint64_t)fdt32_to_cpu(x & 0xffffffff) << 32) | 
+    return ((uint64_t)fdt32_to_cpu(x & 0xffffffff) << 32) |
            fdt32_to_cpu(x >> 32);
 }
 
 // 简化的内存信息提取函数
-static int extract_memory_info(uintptr_t dtb_vaddr, const struct fdt_header *header, 
+static int extract_memory_info(uintptr_t dtb_vaddr, const struct fdt_header *header,
                               uint64_t *mem_base, uint64_t *mem_size) {
     uint32_t struct_offset = fdt32_to_cpu(header->off_dt_struct);
     uint32_t strings_offset = fdt32_to_cpu(header->off_dt_strings);
-    
+
     const char *strings_base = (const char *)(dtb_vaddr + strings_offset);
     const uint32_t *struct_ptr = (const uint32_t *)(dtb_vaddr + struct_offset);
-    
+
     int in_memory_node = 0;
-    
+
     while (1) {
         uint32_t token = fdt32_to_cpu(*struct_ptr++);
-        
+
         switch (token) {
             case FDT_BEGIN_NODE: {
                 const char *name = (const char *)struct_ptr;
                 int name_len = strlen(name);
-                
+
                 // 检查是否是memory节点
                 if (strncmp(name, "memory", 6) == 0) {
                     in_memory_node = 1;
                 }
-                
+
                 // 跳过节点名（4字节对齐）
                 struct_ptr = (const uint32_t *)(((uintptr_t)struct_ptr + name_len + 4) & ~3);
                 break;
             }
-            
+
             case FDT_END_NODE:
                 in_memory_node = 0;
                 break;
-                
+
             case FDT_PROP: {
                 uint32_t prop_len = fdt32_to_cpu(*struct_ptr++);
                 uint32_t prop_nameoff = fdt32_to_cpu(*struct_ptr++);
                 const char *prop_name = strings_base + prop_nameoff;
                 const void *prop_data = struct_ptr;
-                
+
                 // 在memory节点中查找reg属性
                 if (in_memory_node && strcmp(prop_name, "reg") == 0 && prop_len >= 16) {
                     const uint64_t *reg_data = (const uint64_t *)prop_data;
@@ -82,18 +82,18 @@ static int extract_memory_info(uintptr_t dtb_vaddr, const struct fdt_header *hea
                     *mem_size = fdt64_to_cpu(reg_data[1]);
                     return 0; // 成功找到
                 }
-                
+
                 // 跳过属性数据（4字节对齐）
                 struct_ptr = (const uint32_t *)(((uintptr_t)struct_ptr + prop_len + 3) & ~3);
                 break;
             }
-            
+
             case FDT_NOP:
                 break;
-                
+
             case FDT_END:
                 return -1; // 没有找到
-                
+
             default:
                 return -1; // 错误
         }
@@ -108,23 +108,23 @@ void dtb_init(void) {
     cprintf("DTB Init\n");
     cprintf("HartID: %ld\n", boot_hartid);
     cprintf("DTB Address: 0x%lx\n", boot_dtb);
-    
+
     if (boot_dtb == 0) {
         cprintf("Error: DTB address is null\n");
         return;
     }
-    
+
     // 转换为虚拟地址
     uintptr_t dtb_vaddr = boot_dtb + PHYSICAL_MEMORY_OFFSET;
     const struct fdt_header *header = (const struct fdt_header *)dtb_vaddr;
-    
+
     // 验证DTB
     uint32_t magic = fdt32_to_cpu(header->magic);
     if (magic != 0xd00dfeed) {
         cprintf("Error: Invalid DTB magic number: 0x%x\n", magic);
         return;
     }
-    
+
     // 提取内存信息
     uint64_t mem_base, mem_size;
     if (extract_memory_info(dtb_vaddr, header, &mem_base, &mem_size) == 0) {

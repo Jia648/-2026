@@ -13,4 +13,3 @@
 #define MAXERROR            6
 
 #endif /* !__LIBS_ERROR_H__ */
-

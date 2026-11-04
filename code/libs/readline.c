@@ -47,4 +47,3 @@ readline(const char *prompt) {
         }
     }
 }
-

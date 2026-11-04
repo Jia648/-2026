@@ -92,4 +92,3 @@ read_packet = $(foreach p,$(call packetname,$(1)),$($(p)))
 add_dependency = $(eval $(1): $(2))
 
 finish_all = $(eval $(call do_finish_all))
-

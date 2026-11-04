@@ -1,5 +1,4 @@
 code/obj/
 code/bin/
-code/.qemu.out
-code/.gdb.in
-**/__pycache__/
+code/.qemu*
+code/.gdb*

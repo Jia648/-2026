@@ -1,4 +1,4 @@
-PROJ	:= lab2
+PROJ	:= lab3
 EMPTY	:=
 SPACE	:= $(EMPTY) $(EMPTY)
 SLASH	:= /
@@ -27,14 +27,13 @@ endif
 HOSTCC		:= gcc
 HOSTCFLAGS	:= -Wall -O2
 
-GDB		?= gdb-multiarch
+GDB		:= $(GCCPREFIX)gdb
 
 CC		:= $(GCCPREFIX)gcc
-CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror 
+CFLAGS  := -mcmodel=medany -std=gnu99 -Wno-unused -Werror
 CFLAGS	+= -fno-builtin -Wall -O2 -nostdinc $(DEFS)
 CFLAGS	+= -fno-stack-protector -ffunction-sections -fdata-sections
 CFLAGS	+= -g
-CFLAGS += $(PMM_DEFS)
 CFLAGS2 = $(CFLAGS) -D ucore_test
 CTYPE	:= c S
 LD      := $(GCCPREFIX)ld
@@ -99,6 +98,7 @@ $(call add_files_cc,$(call listf_cc,$(LIBDIR)),libs,)
 
 KINCLUDE	+= kern/debug/ \
 			   kern/driver/ \
+			   kern/trap/ \
 			   kern/mm/ \
 			   kern/arch/
 
@@ -106,6 +106,7 @@ KSRCDIR		+= kern/init \
 			   kern/libs \
 			   kern/debug \
 			   kern/driver \
+			   kern/trap \
 			   kern/mm
 
 KCFLAGS		+= $(addprefix -I,$(KINCLUDE))
@@ -177,7 +178,7 @@ debug: $(UCOREIMG) $(SWAPIMG) $(SFSIMG)
 		-s -S
 
 gdb:
-	$(GDB) \
+	gdb-multiarch \
     -ex 'file bin/kernel' \
     -ex 'set arch riscv:rv64' \
     -ex 'target remote localhost:1234'
@@ -197,11 +198,11 @@ GRADE_GDB_IN	:= .gdb.in
 GRADE_QEMU_OUT	:= .qemu.out
 HANDIN			:= proj$(PROJ)-handin.tar.gz
 
-TOUCH_FILES		:=
+TOUCH_FILES		:= kern/trap/trap.c
 
 MAKEOPTS		:= --quiet --no-print-directory
 
-GRADE_TMP	:= /tmp/lab2_grade
+GRADE_TMP	:= /tmp/lab3_grade
 
 grade:
 	$(V)$(MAKE) $(MAKEOPTS) clean
@@ -237,14 +238,5 @@ tags:
 	@echo TAGS ALL
 	$(V)rm -f cscope.files cscope.in.out cscope.out cscope.po.out tags
 	$(V)find . -type f -name "*.[chS]" >cscope.files
-	$(V)cscope -bq 
+	$(V)cscope -bq
 	$(V)ctags -L cscope.files
-
-# Clean between modes because compiler definitions affect the same object names.
-.PHONY: buddy slub
-buddy:
-	$(MAKE) clean
-	$(MAKE) PMM_DEFS=-DUSE_BUDDY qemu
-slub:
-	$(MAKE) clean
-	$(MAKE) PMM_DEFS=-DRUN_SLUB qemu

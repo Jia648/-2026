@@ -25,3 +25,5 @@ int sbi_console_getchar(void) {
 void sbi_set_timer(unsigned long long stime_value) {
     sbi_call(SBI_SET_TIMER, (unsigned long)stime_value, 0, 0);
 }
+
+void sbi_shutdown(void) { sbi_call(8, 0, 0, 0); }

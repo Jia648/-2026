@@ -10,6 +10,6 @@ SECTIONS {
 
     .text : { *(.text) }
     .data : { *(.data .rodata) }
-    
+
     /DISCARD/ : { *(.eh_*) }
 }

@@ -9,4 +9,3 @@ typedef __builtin_va_list va_list;
 #define va_end(ap)                      /*nothing*/
 
 #endif /* !__LIBS_STDARG_H__ */
-
