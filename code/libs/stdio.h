@@ -8,7 +8,6 @@
 int cprintf(const char *fmt, ...);
 int vcprintf(const char *fmt, va_list ap);
 void cputchar(int c);
-int cputs(const char *str);
 int getchar(void);
 
 /* kern/libs/readline.c */

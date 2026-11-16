@@ -1,13 +1,12 @@
-# Lab3
+# Lab4
 
-只包含今年必做部分，未启用旧版 Challenge。
+在 Ubuntu 虚拟机运行：
 
 ```bash
-cd ~/lab3-complete/code
+cd ~/lab4-complete/code
 make clean && make qemu
-make grade
 ```
 
-正常启动后每 100 次时钟中断输出一次 `100 ticks`，累计 10 次后关机。
+看到 initproc 和时钟输出后，先按 Ctrl+A，再按 X 退出 QEMU。执行 `make grade` 运行课程评分。实验报告见 [report/report.md](report/report.md)。
 
-GDB：终端一 `make debug`，终端二 `make gdb`，设置 `hbreak trap` 后 `continue`，使用 `p *tf` 查看 Trap 上下文。
+调试时，终端一执行 `make debug`，终端二执行 `make gdb`，可在 `proc_run` 或 `switch_to` 设置硬件断点。

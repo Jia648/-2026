@@ -160,3 +160,4 @@ __list_del(list_entry_t *prev, list_entry_t *next) {
 #endif /* !__ASSEMBLER__ */
 
 #endif /* !__LIBS_LIST_H__ */
+

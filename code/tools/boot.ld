@@ -1,5 +1,5 @@
-OUTPUT_FORMAT("elf32-i386")
-OUTPUT_ARCH(i386)
+OUTPUT_FORMAT("elf64-rv64")
+OUTPUT_ARCH(rv64)
 
 SECTIONS {
     . = 0x7C00;
@@ -10,6 +10,6 @@ SECTIONS {
 
     .text : { *(.text) }
     .data : { *(.data .rodata) }
-
+    
     /DISCARD/ : { *(.eh_*) }
 }
